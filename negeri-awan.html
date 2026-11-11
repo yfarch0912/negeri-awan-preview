@@ -312,21 +312,112 @@ body.opened #btnMusic{display:flex}
 </style>
 
 <style id="na-extra">
+/* ===== BESPOKE NEGERI AWAN — "MENAIKI TANGGA AWAN" (2026-11-12) =====
+   Seluruh gerak ambient = animasi CSS kompositor (transform/opacity, easing sinus
+   cubic-bezier(.37,0,.63,1)); TANPA canvas, TANPA loop JS per-frame untuk ambient.
+   Kelas gerak bank dipatuhi: gantung = rotasi dari titik atas; tegak = rotasi dari
+   pangkal bawah tanpa translate akar; melayang = bebas bob/drift (pulau, kapal, awan). */
 .cloud-drift{position:absolute;pointer-events:none;opacity:.92;animation:cloudDrift var(--cd,46s) cubic-bezier(.37,0,.63,1) infinite alternate;z-index:3}
 @keyframes cloudDrift{from{transform:translate3d(-14px,0,0)}to{transform:translate3d(22px,-6px,0)}}
-.balloon-float{animation:balloonFloat 7s cubic-bezier(.37,0,.63,1) infinite alternate}
-@keyframes balloonFloat{from{transform:translateY(0) rotate(-1.4deg)}to{transform:translateY(-14px) rotate(1.4deg)}}
 .hang-sway{transform-origin:50% 0;animation:hangSway 6.5s cubic-bezier(.37,0,.63,1) infinite alternate}
 @keyframes hangSway{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
 .sec-kicker{animation:kickerGlow 3.6s ease-in-out infinite alternate}
 @keyframes kickerGlow{from{box-shadow:0 2px 12px rgba(252,246,230,.6),inset 0 0 0 1px rgba(184,137,46,.35)}to{box-shadow:0 2px 18px rgba(243,217,139,.85),inset 0 0 0 1px rgba(184,137,46,.6)}}
 .dc-chip{animation:chipBob 4.4s ease-in-out infinite alternate}
 @keyframes chipBob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
+.sec-icon{animation:iconFloat 5.5s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes iconFloat{from{transform:translateY(0)}to{transform:translateY(-4px)}}
 .rv-flip{transform:perspective(700px) rotateX(14deg) translateY(26px)}.rv-drop{transform:translateY(-34px)}.rv-pop{transform:scale(.7)}
-.rv.in.rv-flip,.rv.in.rv-drop,.rv.in.rv-pop{transform:none}
+.rv-climb{transform:translate(40px,54px)}
+.rv.in.rv-flip,.rv.in.rv-drop,.rv.in.rv-pop,.rv.in.rv-climb{transform:none}
 .cover-kicker,.cover-guest{background:rgba(20,30,58,.55);padding:6px 14px;border-radius:999px;backdrop-filter:blur(3px)}
 .gname{background:rgba(20,30,58,.55);padding:4px 16px;border-radius:999px;display:inline-block}
-@media (prefers-reduced-motion: reduce){.cloud-drift,.balloon-float,.hang-sway,.sec-kicker,.dc-chip{animation:none!important}}
+
+/* --- sampul: cahaya gerbang istana (denyut + sembur saat tangga selesai terbentuk) --- */
+.gate-glow{position:absolute;left:50%;top:29.5%;width:36%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:2;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,240,190,.9) 0%,rgba(255,216,130,.38) 42%,rgba(255,216,130,0) 70%);mix-blend-mode:screen;
+  animation:gateIn 1.6s 2.8s cubic-bezier(.22,.8,.3,1) both,gatePulse 4.6s 4.4s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes gateIn{from{opacity:0;transform:translate(-50%,-50%) scale(.35)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes gatePulse{from{opacity:.55;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+/* --- sampul: pelangi tipis berkilau di atas istana --- */
+.rainbow{position:absolute;left:2%;top:3.5%;width:96%;z-index:2;pointer-events:none;animation:rainbowShimmer 9s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes rainbowShimmer{from{opacity:.22;transform:translateY(0)}to{opacity:.55;transform:translateY(4px)}}
+/* --- sampul: pulau melayang bob multi-kecepatan (melayang) --- */
+.isle{position:absolute;pointer-events:none;z-index:5;animation:isleBob var(--bd,6s) cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes isleBob{from{transform:translateY(0) rotate(-.7deg)}to{transform:translateY(calc(-1*var(--ba,10px))) rotate(.7deg)}}
+/* --- sampul: kapal langit kecil berlayar pelan (melayang) — PENGGANTI balon (identitas tema lain) --- */
+.ship{position:absolute;pointer-events:none;z-index:5;animation:shipSail 26s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes shipSail{from{transform:translate(0,0) rotate(-1.1deg)}to{transform:translate(30px,-11px) rotate(1.3deg)}}
+/* --- sampul: TANGGA AWAN terbentuk anak-tangga demi anak-tangga (ritual signature) --- */
+.stairs{position:absolute;left:6%;bottom:0;width:88%;height:47%;z-index:2;pointer-events:none}
+.stair{position:absolute;height:13.5%;border-radius:999px;
+  background:radial-gradient(58% 95% at 28% 12%,rgba(255,255,255,.95) 0%,rgba(255,255,255,0) 60%),radial-gradient(52% 90% at 72% 16%,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 58%),linear-gradient(180deg,#ffffff 0%,#e8f1fc 55%,#c2d7f2 100%);
+  box-shadow:0 12px 26px rgba(64,84,140,.35),inset 0 -9px 15px rgba(150,180,225,.55),inset 0 4px 8px rgba(255,255,255,.9);
+  animation:stairForm .85s cubic-bezier(.22,.8,.3,1) both,stairBreath 6.5s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes stairForm{from{opacity:0;transform:translateY(30px) scale(.78)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes stairBreath{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.012)}}
+
+/* --- BANK AWAN antar-section: lapisan awan tebal yang "dilewati" saat menaiki tangga --- */
+.cloud-bank{position:relative;height:98px;margin:-16px 0;z-index:3;pointer-events:none}
+.cb-back{position:absolute;left:-7%;top:-4px;width:74%;opacity:.78;animation:bankDriftA 40s cubic-bezier(.37,0,.63,1) infinite alternate}
+.cb-front{position:absolute;right:-9%;bottom:-8px;width:88%;animation:bankDriftB 31s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes bankDriftA{from{transform:translate3d(-10px,0,0)}to{transform:translate3d(18px,-4px,0)}}
+@keyframes bankDriftB{from{transform:translate3d(14px,0,0)}to{transform:translate3d(-16px,-5px,0)}}
+.cb-chip{position:absolute;left:50%;top:50%;white-space:nowrap;background:#1d2a4a;color:#f3d98b;font-size:9.5px;font-weight:700;letter-spacing:.3em;
+  padding:6px 13px 6px 16px;border-radius:999px;border:1px solid rgba(243,217,139,.75);box-shadow:0 8px 20px rgba(29,42,74,.38);
+  animation:bankChipBob 5.2s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes bankChipBob{from{transform:translate(-50%,-50%)}to{transform:translate(-50%,calc(-50% - 3px))}}
+
+/* --- ornamen khas per section (set berbeda tiap section; anchor sesuai kelas_gerak bank) --- */
+.sec-orn{position:absolute;pointer-events:none;z-index:2}
+.orn-hang{transform-origin:50% 0;animation:ornSwayT var(--od,6.5s) cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes ornSwayT{from{transform:rotate(-2.3deg)}to{transform:rotate(2.3deg)}}
+.orn-up{transform-origin:50% 100%;animation:ornSwayB var(--od,7s) cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes ornSwayB{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg)}}
+.orn-fly{animation:ornFly 6.8s cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes ornFly{from{transform:translate(0,0) rotate(-2deg)}to{transform:translate(-12px,-9px) rotate(2deg)}}
+.orn-lamp{animation:lampGlow 3.8s ease-in-out infinite alternate}
+@keyframes lampGlow{from{filter:drop-shadow(0 0 2px rgba(255,205,110,.25))}to{filter:drop-shadow(0 0 12px rgba(255,205,110,.8))}}
+
+/* --- countdown: DIAL matahari-bulan berputar sangat lambat di langit --- */
+.dial{width:128px;height:128px;margin:2px auto 16px;position:relative}
+.dial-disc{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:conic-gradient(from -90deg,#f6dc9a 0deg 180deg,#26355e 180deg 360deg);
+  border:2px solid rgba(184,137,46,.85);box-shadow:0 14px 30px rgba(36,29,61,.35),inset 0 0 0 4px rgba(253,248,236,.35);
+  animation:dialSpin 120s linear infinite}
+@keyframes dialSpin{to{transform:rotate(360deg)}}
+.dial-sun{position:absolute;left:50%;top:9px;width:17px;height:17px;margin-left:-8.5px;border-radius:50%;
+  background:radial-gradient(circle,#fff6d8 0%,#f3c95e 62%,#e09b2d 100%);box-shadow:0 0 14px 5px rgba(246,200,90,.75)}
+.dial-moon{position:absolute;left:50%;bottom:11px;width:14px;height:14px;margin-left:-7px;border-radius:50%;
+  background:transparent;box-shadow:inset -5px 3px 0 0 #e9e4ff;transform:rotate(-24deg)}
+.dial-star{position:absolute;width:3.5px;height:3.5px;border-radius:50%;background:#fff;animation:twinkle 2.8s ease-in-out infinite alternate}
+.dial-ring{position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(184,137,46,.55);pointer-events:none}
+.dial-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+  background:#fdf8ec;border:1.5px solid rgba(184,137,46,.9);display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:12.5px;color:#7a5a12;box-shadow:0 6px 14px rgba(36,29,61,.28)}
+.dial-cap{text-align:center;font-size:10px;letter-spacing:.3em;color:#44557e;font-weight:700;margin:-6px 0 14px;animation:chipBob 4.8s ease-in-out infinite alternate}
+
+/* --- LOVE STORY: jalur tangga yang terus menanjak (kartu bergeser naik diagonal) --- */
+#kisah .tl:before{transform:rotate(-2.7deg);transform-origin:top left;height:105%}
+#kisah .tl-item:nth-child(2){margin-left:15px}
+#kisah .tl-item:nth-child(3){margin-left:30px}
+#kisah .tl-item:nth-child(4){margin-left:45px}
+.step-chip{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.26em;color:#f3d98b;background:#24365e;
+  padding:4px 10px 4px 12px;border-radius:999px;margin-bottom:7px;box-shadow:0 5px 12px rgba(36,54,94,.35);
+  animation:chipBob 4.6s ease-in-out infinite alternate}
+
+/* --- GALERI: tiap foto duduk di pulau melayangnya sendiri; rel = melompat antar-pulau --- */
+.gal-float{animation:galBob var(--gb,6s) cubic-bezier(.37,0,.63,1) infinite alternate}
+@keyframes galBob{from{transform:translateY(0) rotate(-.5deg)}to{transform:translateY(-7px) rotate(.5deg)}}
+.gal-isle{display:block;width:102%;max-width:none;margin:-20px 0 0 -1%;position:relative;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 13px rgba(64,84,140,.4))}
+#galeri .gal-grid figure{text-align:center}
+#galeri .gal-cap{display:inline-block;position:relative;z-index:3;margin-top:-32px;background:#1d2a4a;color:#f3d98b;padding:5px 15px;border-radius:999px;border:1px solid rgba(243,217,139,.65);box-shadow:0 8px 18px rgba(29,42,74,.4);text-shadow:none}
+#galeri .gal-grid figure .arch{position:relative;z-index:2}
+
+@media (prefers-reduced-motion: reduce){
+  .cloud-drift,.hang-sway,.sec-kicker,.dc-chip,.sec-icon,.gate-glow,.rainbow,.isle,.ship,.stair,.cb-back,.cb-front,.cb-chip,
+  .orn-hang,.orn-up,.orn-fly,.orn-lamp,.dial-disc,.dial-star,.dial-cap,.step-chip,.gal-float{animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -335,7 +426,15 @@ body.opened #btnMusic{display:flex}
   <!-- ================= SAMPUL: LIVING SCENE ================= -->
   <header id="cover" aria-label="Sampul undangan Negeri Awan">
     <div class="scene" id="scene">
-      <img class="lyr lyr-coverbg" src="assets/undangya/negeri-awan/cover-bg.webp" alt="Lukisan watercolor negeri di atas awan: istana putih-emas di pulau melayang, air terjun tumpah ke awan, tangga awan spiral, burung dan balon kecil di cahaya fajar keemasan" width="860" height="1864">
+      <img class="lyr lyr-coverbg" src="assets/undangya/negeri-awan/cover-bg.webp" alt="Lukisan watercolor negeri di atas awan: istana putih-emas di pulau melayang, air terjun tumpah ke awan, tangga awan spiral dan burung langit di cahaya fajar keemasan" width="860" height="1864">
+      <div class="gate-glow" aria-hidden="true"></div>
+      <svg class="rainbow" viewBox="0 0 300 150" aria-hidden="true"><path d="M12 148 A138 138 0 0 1 288 148" fill="none" stroke="#f2a7c3" stroke-width="6"/><path d="M26 148 A124 124 0 0 1 274 148" fill="none" stroke="#f9d976" stroke-width="6"/><path d="M40 148 A110 110 0 0 1 260 148" fill="none" stroke="#a9d39a" stroke-width="6"/><path d="M54 148 A96 96 0 0 1 246 148" fill="none" stroke="#8fb8e8" stroke-width="6"/><path d="M68 148 A82 82 0 0 1 232 148" fill="none" stroke="#c3a6e8" stroke-width="6"/></svg>
+      <div class="stairs" aria-hidden="true"><span class="stair" style="left:2%;bottom:0;width:96%;animation-delay:.9s,7.6s"></span><span class="stair" style="left:9.5%;bottom:13%;width:84%;animation-delay:1.2s,8.2s"></span><span class="stair" style="left:12.5%;bottom:26%;width:72%;animation-delay:1.5s,8.8s"></span><span class="stair" style="left:22%;bottom:39%;width:59%;animation-delay:1.8s,9.4s"></span><span class="stair" style="left:25%;bottom:52%;width:47%;animation-delay:2.1s,10s"></span><span class="stair" style="left:33%;bottom:65%;width:37%;animation-delay:2.4s,10.6s"></span><span class="stair" style="left:34%;bottom:78%;width:29%;animation-delay:2.7s,11.2s"></span></div>
+      <img class="isle" style="left:3.5%;top:43%;width:22%;--bd:5.2s;--ba:11px" src="assets/undangya/negeri-awan/pulau-1.webp" alt="" aria-hidden="true">
+      <img class="isle" style="right:3%;top:37%;width:17%;--bd:6.4s;--ba:8px" src="assets/undangya/negeri-awan/pulau-1.webp" alt="" aria-hidden="true">
+      <img class="isle" style="left:7%;top:64%;width:13.5%;--bd:7.3s;--ba:7px" src="assets/undangya/negeri-awan/pulau-1.webp" alt="" aria-hidden="true">
+      <img class="isle" style="right:8%;top:68%;width:11.5%;--bd:4.6s;--ba:12px" src="assets/undangya/negeri-awan/pulau-1.webp" alt="" aria-hidden="true">
+      <img class="ship" style="left:2%;top:16.5%;width:17.5%" src="assets/undangya/negeri-awan/kapal-langit.webp" alt="" aria-hidden="true">
       <!-- bunga atas: 12 sprite individual menggantung berlapis (belakang dulu, depan terakhir);
            tengah atas sengaja lega untuk crest + judul -->
       <img class="lyr flwt back wind-fl" data-wind="topflw" data-anchor="top" data-amp="1.7" data-dur="9200" data-bend="3.2" style="left:-1%;top:-2%;width:13%;animation-delay:2.55s" src="assets/undangya/negeri-awan/flower-top-10.webp" alt="">
@@ -369,7 +468,7 @@ body.opened #btnMusic{display:flex}
       <div class="flyx fx-c" style="top:15%;z-index:3"><div class="flyy fy-c"><img class="flyimg fi-c" src="assets/undangya/negeri-awan/bird.webp" alt="" decoding="async"></div></div>
       <div class="ffly-field" id="fflyCover" aria-hidden="true"></div>
       <div class="petal-field" id="petalCover" aria-hidden="true"></div>
-      <img class="cloud-drift" style="left:-8%;top:22%;width:62%;--cd:52s" src="assets/undangya/negeri-awan/awan-1.webp" alt="" aria-hidden="true"><img class="cloud-drift" style="right:-10%;top:58%;width:56%;--cd:64s" src="assets/undangya/negeri-awan/awan-2.webp" alt="" aria-hidden="true"><img class="lyr balloon-float" style="right:6%;top:12%;width:15%;z-index:5" src="assets/undangya/negeri-awan/balon-kecil.webp" alt="" aria-hidden="true"><img class="lyr hang-sway" style="left:4%;top:0;width:11%;z-index:5" src="assets/undangya/negeri-awan/lentera.webp" alt="" aria-hidden="true"><div class="cover-shade"></div>
+      <img class="cloud-drift" style="left:-8%;top:22%;width:62%;--cd:52s" src="assets/undangya/negeri-awan/awan-1.webp" alt="" aria-hidden="true"><img class="cloud-drift" style="right:-10%;top:58%;width:56%;--cd:64s" src="assets/undangya/negeri-awan/awan-2.webp" alt="" aria-hidden="true"><img class="lyr hang-sway" style="left:4%;top:0;width:11%;z-index:5" src="assets/undangya/negeri-awan/lentera.webp" alt="" aria-hidden="true"><div class="cover-shade"></div>
     </div>
     <div class="cover-ui">
       <div class="cover-kicker">THE WEDDING OF</div>
@@ -385,7 +484,7 @@ body.opened #btnMusic{display:flex}
   <main id="content">
     <div class="world-bg" aria-hidden="true"><div class="world-stack" id="worldStack"><img src="assets/undangya/negeri-awan/bg-world.webp" alt="" width="560" height="2074" decoding="async"></div></div>
     <!-- ================= PEMBUKA ================= -->
-    <section id="sambutan">
+    <section id="sambutan"><img class="sec-orn orn-hang" style="right:12px;top:2px;width:62px;--od:6.8s" src="assets/undangya/negeri-awan/orn-bulan.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/crest.webp" alt="">
@@ -400,9 +499,10 @@ body.opened #btnMusic{display:flex}
         </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 1 · GERBANG FAJAR</span></div>
 
     <!-- ================= MEMPELAI ================= -->
-    <section id="mempelai">
+    <section id="mempelai"><img class="sec-orn orn-up" style="left:4px;bottom:14px;width:52px;--od:7.4s" src="assets/undangya/negeri-awan/orn-lavender.webp" alt="" loading="lazy" decoding="async"><img class="sec-orn orn-up" style="right:4px;bottom:14px;width:52px;--od:8.6s" src="assets/undangya/negeri-awan/orn-lavender.webp" alt="" loading="lazy" decoding="async">
       <div class="sec-petals" aria-hidden="true"></div>
       <div class="bg-tint">
       <div class="sec-head rv rv-up">
@@ -433,9 +533,10 @@ body.opened #btnMusic{display:flex}
       </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 2 · BALKON MEMPELAI</span></div>
 
 <!-- ================= LOVE STORY ================= -->
-    <section id="kisah">
+    <section id="kisah"><img class="sec-orn orn-up" style="right:2px;top:10px;width:68px;--od:8.2s" src="assets/undangya/negeri-awan/orn-sakura.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-rings.webp" alt="" loading="lazy" decoding="async">
@@ -444,38 +545,38 @@ body.opened #btnMusic{display:flex}
           <p class="sec-sub">Bab-bab kisah langit yang membawa kami sampai ke hari ini</p>
         </div>
         <div class="tl">
-          <div class="tl-item rv rv-left">
+          <div class="tl-item rv rv-climb">
             <span class="tl-dot" aria-hidden="true"></span>
             <div class="tl-card">
               <img class="tl-thumb" src="assets/undangya/negeri-awan/galeri-5.webp" alt="Pasangan di taman saat awal kisah" loading="lazy" decoding="async">
-              <div class="tl-year">2019</div>
+              <span class="step-chip">TINGKAT 1 · ANAK TANGGA PERTAMA</span><br><div class="tl-year">2019</div>
               <div class="tl-title">Pertama Bertemu</div>
               <p>Berawal dari pertemuan sederhana di perpustakaan kampus — seperti adegan pembuka sebuah dongeng, obrolan hari itu menjadi halaman pertama kisah kami.</p>
             </div>
           </div>
-          <div class="tl-item rv rv-right">
+          <div class="tl-item rv rv-climb">
             <span class="tl-dot" aria-hidden="true"></span>
             <div class="tl-card">
               <img class="tl-thumb" src="assets/undangya/negeri-awan/galeri-2.webp" alt="Pasangan pada momen lamaran" loading="lazy" decoding="async">
-              <div class="tl-year">2023</div>
+              <span class="step-chip">TINGKAT 2 · ANAK TANGGA KEDUA</span><br><div class="tl-year">2023</div>
               <div class="tl-title">Lamaran &amp; Restu</div>
               <p>Di hadapan keluarga tercinta, Fahrezzi menyampaikan niat sucinya. Dengan restu kedua orang tua, Meyzsa menerimanya dengan hati berbunga-bunga.</p>
             </div>
           </div>
-          <div class="tl-item rv rv-left">
+          <div class="tl-item rv rv-climb">
             <span class="tl-dot" aria-hidden="true"></span>
             <div class="tl-card">
               <img class="tl-thumb" src="assets/undangya/negeri-awan/galeri-4.webp" alt="Dua keluarga saling mengenal" loading="lazy" decoding="async">
-              <div class="tl-year">2025</div>
+              <span class="step-chip">TINGKAT 3 · ANAK TANGGA KETIGA</span><br><div class="tl-year">2025</div>
               <div class="tl-title">Menyatukan Dua Keluarga</div>
               <p>Persiapan demi persiapan kami jalani bersama — dua keluarga saling mengenal, menyatukan cerita dan doa, hingga hari bahagia terasa kian dekat.</p>
             </div>
           </div>
-          <div class="tl-item rv rv-right">
+          <div class="tl-item rv rv-climb">
             <span class="tl-dot" aria-hidden="true"></span>
             <div class="tl-card">
               <img class="tl-thumb" src="assets/undangya/negeri-awan/hero.webp" alt="Pasangan di hari bahagia" loading="lazy" decoding="async">
-              <div class="tl-year">2027</div>
+              <span class="step-chip">TINGKAT 4 · PUNCAK TANGGA</span><br><div class="tl-year">2027</div>
               <div class="tl-title">Hari Bahagia</div>
               <p>Sabtu, 12 Juni 2027 — bab terindah kisah kami dimulai. Kami mohon doa restu agar langkah ini diberkahi hingga selamanya.</p>
             </div>
@@ -484,15 +585,18 @@ body.opened #btnMusic{display:flex}
         <p class="demo-note rv rv-up">Linimasa &amp; teks kisah di atas adalah contoh untuk tampilan tema.</p>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 3 · TANGGA KISAH</span></div>
 
         <!-- ================= COUNTDOWN + ACARA ================= -->
-    <section id="acara">
+    <section id="acara"><img class="sec-orn orn-lamp" style="left:6px;top:34%;width:42px" src="assets/undangya/negeri-awan/orn-lampu.webp" alt="" loading="lazy" decoding="async"><img class="sec-orn orn-lamp" style="right:6px;top:34%;width:42px" src="assets/undangya/negeri-awan/orn-lampu.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-clock.webp" alt="" loading="lazy" decoding="async">
           <div class="sec-kicker">HITUNG MUNDUR</div>
           <h2 class="sec-title serif">Menuju Hari Bahagia</h2>
         </div>
+        <div class="dial rv rv-zoom" aria-hidden="true"><div class="dial-disc"><span class="dial-sun"></span><span class="dial-moon"></span><span class="dial-star" style="left:66%;top:58%"></span><span class="dial-star" style="left:78%;top:72%;animation-delay:.9s"></span><span class="dial-star" style="left:60%;top:80%;animation-delay:1.7s"></span></div><div class="dial-ring"></div><div class="dial-core">12·06</div></div>
+        <div class="dial-cap rv rv-up">DIAL MATAHARI–BULAN · ANGKA DI CAKRAWALA</div>
         <div class="countdown rv rv-zoom" id="countdown" data-target="2027-06-12T08:00:00+07:00" aria-label="Hitung mundur menuju akad nikah">
           <div class="cd-box"><b id="cdD">0</b><span>Hari</span></div>
           <div class="cd-box"><b id="cdH">0</b><span>Jam</span></div>
@@ -542,31 +646,33 @@ body.opened #btnMusic{display:flex}
         </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 4 · CAKRAWALA WAKTU</span></div>
 
     <!-- ================= GALERI ================= -->
     <section id="galeri">
       <div class="bg-tint">
-      <div class="sec-head rv rv-up">
+      <div class="sec-head rv rv-up head-glass">
         <img class="sec-icon" src="assets/undangya/negeri-awan/icon-key.webp" alt="" loading="lazy" decoding="async">
         <div class="sec-kicker">GALERI</div>
         <h2 class="sec-title serif">Balkon-Balkon Langit</h2>
         <p class="sec-sub">Geser kanan-kiri — delapan potret dari negeri awan kami, ketuk untuk memperbesar</p>
       </div>
       <div class="gal-grid" id="galGrid">
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-1.webp" alt="Pasangan berjalan di pulau bunga melayang" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Pulau Bunga</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-2.webp" alt="Pasangan berdansa di balkon istana langit" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Balkon Istana</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-3.webp" alt="Pasangan di tangga awan spiral" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Tangga Awan Spiral</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-4.webp" alt="Pasangan di balkon istana saat fajar" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Balkon Fajar</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-5.webp" alt="Pasangan di balkon awan istana langit" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Taman Langit</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-6.webp" alt="Pasangan menaiki kereta kencana emas" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Ayunan Awan</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-7.webp" alt="Pasangan di gerbang awan" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Gerbang Awan</figcaption></figure>
-        <figure class="rv rv-arch"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-8.webp" alt="Pasangan di tepi air terjun awan" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Air Terjun Awan</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:5.4s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-1.webp" alt="Pasangan berjalan di pulau bunga melayang" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Pulau Bunga</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:6.2s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-2.webp" alt="Pasangan berdansa di balkon istana langit" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Balkon Istana</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:7s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-3.webp" alt="Pasangan di tangga awan spiral" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Tangga Awan Spiral</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:5.8s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-4.webp" alt="Pasangan di balkon istana saat fajar" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Balkon Fajar</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:6.6s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-5.webp" alt="Pasangan di balkon awan istana langit" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Taman Langit</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:7.4s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-6.webp" alt="Pasangan menaiki kereta kencana emas" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Ayunan Awan</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:5.2s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-7.webp" alt="Pasangan di gerbang awan" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Gerbang Awan</figcaption></figure>
+        <figure class="rv rv-arch gal-fig"><div class="gal-float" style="--gb:6.9s"><div class="arch"><img src="assets/undangya/negeri-awan/galeri-8.webp" alt="Pasangan di tepi air terjun awan" loading="lazy" decoding="async"></div><img class="gal-isle" src="assets/undangya/negeri-awan/pulau-galeri.webp" alt="" loading="lazy" decoding="async"></div><figcaption class="gal-cap">Air Terjun Awan</figcaption></figure>
       </div><div class="gal-dots" id="galDots" aria-hidden="true"></div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 5 · KEPULAUAN POTRET</span></div>
 
 <!-- ================= CUPLIKAN ================= -->
-    <section id="cuplikan">
+    <section id="cuplikan"><img class="sec-orn orn-hang" style="left:8px;top:0;width:38px;--od:6.2s" src="assets/undangya/negeri-awan/orn-lentera.webp" alt="" loading="lazy" decoding="async"><img class="sec-orn orn-hang" style="right:8px;top:0;width:38px;--od:7.6s" src="assets/undangya/negeri-awan/orn-lentera.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-crown.webp" alt="" loading="lazy" decoding="async">
@@ -585,9 +691,10 @@ body.opened #btnMusic{display:flex}
         <p class="demo-note rv rv-up">Video teaser — contoh (dirender dari foto pasangan tema ini dengan lagu pengiring; pada undangan asli dapat diganti video prewedding mempelai).</p>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 6 · LAYAR LANGIT</span></div>
 
     <!-- ================= LIVE STREAMING + TAGAR ================= -->
-    <section id="live">
+    <section id="live"><img class="sec-orn orn-fly" style="right:8px;top:16px;width:72px" src="assets/undangya/negeri-awan/orn-burung.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-carriage.webp" alt="" loading="lazy" decoding="async">
@@ -618,9 +725,10 @@ body.opened #btnMusic{display:flex}
         </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 7 · SIARAN AWAN</span></div>
 
         <!-- ================= RSVP ================= -->
-    <section id="rsvp">
+    <section id="rsvp"><img class="sec-orn orn-up" style="left:4px;bottom:12px;width:56px;--od:7.8s" src="assets/undangya/negeri-awan/orn-mawar.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-rings.webp" alt="" loading="lazy" decoding="async">
@@ -641,9 +749,10 @@ body.opened #btnMusic{display:flex}
         </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 8 · BUKU TAMU AWAN</span></div>
 
 <!-- ================= BUKU TAMU & CHECK-IN QR ================= -->
-    <section id="bukutamu">
+    <section id="bukutamu"><img class="sec-orn orn-up" style="right:4px;bottom:12px;width:56px;--od:8.4s" src="assets/undangya/negeri-awan/orn-melati.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/icon-scroll.webp" alt="" loading="lazy" decoding="async">
@@ -665,9 +774,10 @@ body.opened #btnMusic{display:flex}
         </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 9 · GERBANG PRESENSI</span></div>
 
         <!-- ================= AMPLOP ================= -->
-    <section id="amplop">
+    <section id="amplop"><img class="sec-orn orn-up" style="left:4px;top:26%;width:50px;--od:7.2s" src="assets/undangya/negeri-awan/orn-anggrek.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
       <div class="sec-head rv rv-up head-glass">
         <img class="sec-icon" src="assets/undangya/negeri-awan/icon-crown.webp" alt="" loading="lazy" decoding="async">
@@ -695,9 +805,10 @@ body.opened #btnMusic{display:flex}
       </div>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 10 · PERBENDAHARAAN LANGIT</span></div>
 
 <!-- ================= TURUT MENGUNDANG ================= -->
-    <section id="turut">
+    <section id="turut"><img class="sec-orn orn-up" style="right:6px;bottom:6px;width:74px;--od:9s" src="assets/undangya/negeri-awan/orn-semak.webp" alt="" loading="lazy" decoding="async">
       <div class="bg-tint">
         <div class="sec-head rv rv-up">
           <img class="sec-icon" src="assets/undangya/negeri-awan/crest.webp" alt="" loading="lazy" decoding="async">
@@ -718,9 +829,10 @@ body.opened #btnMusic{display:flex}
         <p class="demo-note rv rv-up">Susunan keluarga di atas adalah contoh untuk tampilan tema.</p>
       </div>
     </section>
+    <div class="cloud-bank" aria-hidden="true"><img class="cb-back" src="assets/undangya/negeri-awan/awan-2.webp" alt=""><img class="cb-front" src="assets/undangya/negeri-awan/awan-1.webp" alt=""><span class="cb-chip">TINGKAT 11 · SERAMBI KELUARGA</span></div>
 
         <!-- ================= PENUTUP ================= -->
-    <section id="penutup" style="text-align:center">
+    <section id="penutup" style="text-align:center"><img class="sec-orn orn-up" style="left:8px;bottom:8px;width:54px;--od:8.8s" src="assets/undangya/negeri-awan/orn-vas.webp" alt="" loading="lazy" decoding="async">
       <img class="lyr wind-fl" data-wind="soft" data-anchor="top" style="position:absolute;top:6px;left:0;width:100%;opacity:.55;z-index:1" src="assets/undangya/negeri-awan/flower-top.webp" alt="" loading="lazy" decoding="async">
       <div class="sec-petals" aria-hidden="true"></div>
       <div class="bg-tint panel-glass" style="padding:30px 22px 26px">
